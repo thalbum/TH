@@ -1,0 +1,7 @@
+@media (max-width:700px){
+  .topbar{gap:8px}.ghost{padding:8px 12px}
+  .controls{gap:12px}.controls output{min-width:100px;font-size:18px}
+  .lightbox{grid-template-columns:1fr;grid-template-rows:1fr auto;}
+  .lightbox .lb-prev,.lightbox .lb-next{position:absolute;bottom:14px}.lb-prev{left:14px}.lb-next{right:14px}
+}
+@media (min-width:1600px){.controls output{font-size:24px}.ghost,.sel select{font-size:17px}}

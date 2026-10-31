@@ -1,0 +1,23 @@
+{
+  "name": "photoalbum120",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "validate": "node scripts/validate-album.js",
+    "placeholders": "python3 scripts/make-placeholders.py",
+    "build:usb": "node scripts/build-usb.js",
+    "build:video": "node scripts/generate-video.js"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/jost": "^5.3.0",
+    "page-flip": "^2.0.7"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

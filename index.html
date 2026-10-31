@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Trung-Ha and Adelaide Friends — 3D Photo Album & Slideshow</title>
+  <meta name="description" content="A luxury 3D interactive photo album and cinematic slideshow celebrating Trung-Ha and Adelaide Friends.">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231a1510'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23d4af37' stroke-width='2'/%3E%3Ctext x='16' y='20' text-anchor='middle' font-family='serif' font-size='12' fill='%23f5e7b8'%3ETH%3C/text%3E%3C/svg%3E">
+
+  <!-- Progressive Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/wedding.css?v=2.0">
+</head>
+<body>
+
+  <!-- Floating Rose Petals & Golden Bokeh Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Private Album Access Modal / Lock Screen (Access Code: adelaide) -->
+  <div class="private-access-gate" id="private-access-gate">
+    <div class="access-card">
+      <div class="access-monogram">TH</div>
+      
+      <div class="access-title-wrap">
+        <h1 class="lock-title-three-rows">
+          <span class="title-row-1">Trung-Ha</span>
+          <span class="title-row-2">and</span>
+          <span class="title-row-3">Adelaide Friends</span>
+        </h1>
+        <p class="access-subtitle">Private Photo Album • Our Journey Together</p>
+      </div>
+
+      <div class="access-filigree">
+        <svg viewBox="0 0 44 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 0L24 7L31 5L26 10L32 14L22 11L12 14L18 10L13 5L20 7L22 0Z" fill="#d4af37"/>
+        </svg>
+      </div>
+
+      <form class="access-form" id="access-form" onsubmit="return false;">
+        <label for="access-code-input" class="access-label">Enter Private Access Code to Enter:</label>
+        <div class="access-input-wrap">
+          <input 
+            type="password" 
+            id="access-code-input" 
+            class="access-input" 
+            placeholder="Access code (adelaide)" 
+            autocomplete="current-password"
+          >
+          <button type="button" class="btn-toggle-show-code" id="btn-toggle-show-code" title="Show / Hide Code">👁️</button>
+        </div>
+        <div class="access-error" id="access-error" aria-live="polite"></div>
+        <button type="submit" class="btn-wedding-primary access-submit-btn" id="btn-access-submit">
+          <span>🗝️</span> <span>Unlock Album</span>
+        </button>
+      </form>
+
+      <div class="access-hint">Private access for family &amp; Adelaide friends only</div>
+    </div>
+  </div>
+
+  <div id="app">
+
+    <!-- Top Luxury Navigation Header -->
+    <header class="site-header">
+      <div class="brand-wrap" id="brand-home" title="Return to Cover">
+        <div class="brand-monogram">TH</div>
+        <div>
+          <h1 class="brand-title">Trung-Ha and Adelaide Friends</h1>
+          <div class="brand-subtitle">Our Journey Together • Adelaide</div>
+        </div>
+      </div>
+
+      <nav class="nav-controls">
+        <div class="nav-pill">
+          <button class="nav-tab active" data-view="cover" title="3D Cover">
+            <span>✨</span> <span>Cover</span>
+          </button>
+          <button class="nav-tab" data-view="book" title="3D Flip Book">
+            <span>📖</span> <span>3D Album</span>
+          </button>
+          <button class="nav-tab" data-view="slideshow" title="Cinematic Slideshow">
+            <span>🎬</span> <span>Slideshow</span>
+          </button>
+          <button class="nav-tab" data-view="recap" title="Photo Story Recap">
+            <span>📸</span> <span>Photo Recap</span>
+          </button>
+        </div>
+
+        <!-- Background Music Identifier & Toggle -->
+        <div class="music-pill-wrap">
+          <button class="music-pill-btn" id="btn-sound-toggle" title="Click to Play / Mute Background Music">
+            <span class="music-icon" id="music-icon">🔇</span>
+            <div class="music-info-text">
+              <span class="music-now-playing">Background Music</span>
+              <span class="music-track-title" id="music-track-title">Calm Resolved</span>
+            </div>
+            <div class="sound-bars" id="sound-bars">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <span class="music-gear-btn" id="btn-music-gear" title="Music Details">⚙</span>
+          </button>
+          
+          <!-- Music Details Popover -->
+          <div class="music-details-popover" id="music-details-popover">
+            <div class="music-pop-title">🎵 Background Music</div>
+            <div class="music-pop-track" id="music-pop-track">Calm Resolved</div>
+            <div class="music-pop-desc" id="music-pop-desc">Calm Resolved (Acoustic Piano & Warm Strings)</div>
+            <div class="music-pop-meta" id="music-pop-meta">Peaceful & Reflective • 3:14 min • Endless Loop</div>
+          </div>
+        </div>
+
+        <!-- Theme Picker -->
+        <div class="theme-picker-wrap">
+          <button class="btn-icon" id="btn-theme-picker" title="Switch Theme" aria-label="Switch Theme">
+            🎨
+          </button>
+          <div class="theme-dropdown" id="theme-dropdown">
+            <button class="theme-opt" data-set-theme="ivory">
+              <span class="theme-dot ivory"></span> <span>Royal Ivory & Gold</span>
+            </button>
+            <button class="theme-opt" data-set-theme="blush">
+              <span class="theme-dot blush"></span> <span>Blush Rose Romance</span>
+            </button>
+            <button class="theme-opt" data-set-theme="midnight">
+              <span class="theme-dot midnight"></span> <span>Midnight Gala</span>
+            </button>
+            <button class="theme-opt" data-set-theme="emerald">
+              <span class="theme-dot emerald"></span> <span>Emerald Garden</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Thumbnail Drawer Toggle -->
+        <button class="btn-icon" id="btn-toggle-thumbs" title="All 118 Photos" aria-label="Toggle Photo Strip">
+          🖼️
+        </button>
+
+        <!-- Lock Album (Private Use) -->
+        <button class="btn-icon" id="btn-lock-album" title="Lock Album (Private Use)" aria-label="Lock Album">
+          🔒
+        </button>
+      </nav>
+    </header>
+
+    <!-- ================= VIEW 1: 3D COVER HERO ================= -->
+    <main id="view-cover" class="view-stage active">
+      <div class="cover-presentation">
+        
+        <!-- 3D Book Hardcover with Parallax Tilt -->
+        <div class="book-3d-box" id="hero-book-box" role="button" tabindex="0" aria-label="Open Trung-Ha and Adelaide Friends Album">
+          <div class="book-3d-card" id="hero-3d-card">
+            <div class="b3d-pages"></div>
+            <div class="b3d-inner"></div>
+            <div class="b3d-spine"></div>
+            <div class="b3d-edge"></div>
+            
+            <!-- Front Hardcover -->
+            <div class="b3d-front">
+              <div class="cover-layout">
+                <div class="cover-photo-frame">
+                  <img src="TH/TH (70).jpg" alt="Trung-Ha and Adelaide Friends Cover" loading="eager">
+                </div>
+                <div>
+                  <svg class="cover-filigree" viewBox="0 0 44 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 0L24 7L31 5L26 10L32 14L22 11L12 14L18 10L13 5L20 7L22 0Z" fill="url(#fgold)"/>
+                    <defs>
+                      <linearGradient id="fgold" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#96762e"/>
+                        <stop offset="50%" stop-color="#f7ebb8"/>
+                        <stop offset="100%" stop-color="#96762e"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <h2 class="cover-title cover-title-three-rows">
+                    <span class="title-row-1">Trung-Ha</span>
+                    <span class="title-row-2">and</span>
+                    <span class="title-row-3">Adelaide Friends</span>
+                  </h2>
+                  <p class="cover-subtitle">Our Journey Together</p>
+                  <p class="cover-date">Adelaide, South Australia</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Action Callouts -->
+        <div class="hero-actions">
+          <button class="btn-wedding-primary" id="btn-open-book">
+            <span>📖</span> <span>Open Album</span>
+          </button>
+          <button class="btn-wedding-secondary" id="btn-start-slideshow">
+            <span>🎬</span> <span>Play 3D Slideshow</span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ================= VIEW 2: 3D BOOK READER ================= -->
+    <section id="view-book" class="view-stage">
+      <div class="book-toolbar">
+        <label>
+          <select id="book-chapter-sel" class="book-chapter-sel" aria-label="Select Chapter"></select>
+        </label>
+        <span style="font-size: 13px; color: var(--gold-light); opacity: 0.85;">
+          Click pages or use ← → arrow keys to turn
+        </span>
+      </div>
+
+      <div class="book-scene">
+        <div class="book-spread-container" id="book-spread-container">
+          <div class="book-spine-crease"></div>
+
+          <!-- Left Half Page -->
+          <div class="book-half-page left-page" id="book-left-page"></div>
+
+          <!-- Right Half Page -->
+          <div class="book-half-page right-page" id="book-right-page"></div>
+
+          <!-- 3D Flipping Leaf (for flip animations) -->
+          <div class="flipping-leaf" id="flipping-leaf">
+            <div class="leaf-face front"></div>
+            <div class="leaf-face back"></div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="book-nav-controls">
+        <button class="book-nav-btn" id="book-prev-btn" aria-label="Previous Page">&#8592;</button>
+        <div class="book-page-indicator" id="book-page-indicator">Cover & Dedication</div>
+        <button class="book-nav-btn" id="book-next-btn" aria-label="Next Page">&#8594;</button>
+      </footer>
+    </section>
+
+    <!-- ================= VIEW 3: 3D CINEMATIC SLIDESHOW ================= -->
+    <section id="view-slideshow" class="view-stage">
+      <div class="slideshow-viewport" id="slideshow-viewport">
+        <!-- Ambient Blurred Backdrop -->
+        <div class="ss-ambient-bg" id="ss-ambient-bg"></div>
+
+        <!-- Main Uncropped Photo Stage (Click to toggle play/pause) -->
+        <div class="ss-photo-stage" id="ss-photo-stage" title="Click to Play / Pause">
+          <img id="ss-main-img" class="ss-main-img" src="" alt="Photograph">
+        </div>
+
+        <!-- Floating Nav Arrows -->
+        <button class="slideshow-nav-arrow prev" id="ss-arrow-prev" aria-label="Previous Photo">&#8592;</button>
+        <button class="slideshow-nav-arrow next" id="ss-arrow-next" aria-label="Next Photo">&#8594;</button>
+
+        <!-- Bottom Caption & Controls HUD -->
+        <div class="slideshow-hud" id="slideshow-hud">
+          <div class="slideshow-info-row">
+            <div class="slideshow-caption-box">
+              <div class="slide-ch-badge" id="slide-ch-badge">Chapter 01 • The Prelude</div>
+              <h2 class="slide-caption-title" id="slide-caption-title">Trung-Ha and Adelaide Friends</h2>
+              <p class="slide-caption-desc" id="slide-caption-desc">A beautiful moment in Adelaide.</p>
+              <div class="slide-music-tag">
+                <span>🎵 Background Music:</span> <b id="ss-music-name">Calm Resolved</b>
+              </div>
+            </div>
+
+            <div class="slideshow-counter-box">
+              <span class="slide-counter-big" id="slide-counter-big">001</span>
+              <span class="slide-counter-total" id="slide-counter-total">/ 118</span>
+            </div>
+          </div>
+
+          <!-- Progress Bar Track -->
+          <div class="slideshow-progress-track" id="ss-progress-track" title="Click to scrub">
+            <div class="slideshow-progress-bar" id="ss-progress-bar"></div>
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="slideshow-controls-bar">
+            <button class="ss-btn" id="ss-prev-btn" title="Previous Slide (←)">&#8592;</button>
+            <button class="ss-btn play-btn" id="ss-play-btn" title="Play / Pause (Space)">
+              <span id="ss-play-icon">▶</span>
+            </button>
+            <button class="ss-btn" id="ss-next-btn" title="Next Slide (→)">&#8594;</button>
+
+            <select class="ss-speed-select" id="ss-speed-select" title="Slide Duration">
+              <option value="6000">Slow (6s)</option>
+              <option value="4500" selected>Normal (4.5s)</option>
+              <option value="2500">Fast (2.5s)</option>
+            </select>
+
+            <button class="ss-btn" id="ss-fullscreen-btn" title="Fullscreen (F)">⛶</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 4: PHOTO STORY RECAP & HIGHLIGHTS ================= -->
+    <section id="view-recap" class="view-stage">
+      <div class="recap-container">
+        
+        <header class="recap-hero">
+          <div class="recap-title-wrap">
+            <h1 class="recap-title-three-rows">
+              <span class="title-row-1">Trung-Ha</span>
+              <span class="title-row-2">and</span>
+              <span class="title-row-3">Adelaide Friends</span>
+            </h1>
+            <p class="recap-subtitle">Our Journey Together • All 118 Moments from Moment 1</p>
+          </div>
+          <div class="recap-cta-bar">
+            <button class="btn-wedding-primary" id="btn-recap-play">
+              <span>🎬</span> <span>Play in 3D Slideshow</span>
+            </button>
+            <button class="btn-wedding-secondary" id="btn-recap-book">
+              <span>📖</span> <span>Turn Pages in 3D Album</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Clickable Key Chapters Header -->
+        <div class="recap-section-header">
+          <div>
+            <h3 class="recap-section-title">✨ Key Story Chapters</h3>
+            <p class="recap-section-subtitle">Click any chapter to view its moments, launch the slideshow, or open the 3D book</p>
+          </div>
+          <button class="recap-show-all-btn" id="btn-recap-show-all">View All Moments (from Moment 1)</button>
+        </div>
+
+        <!-- Chapter Story Cards (Clickable) -->
+        <div class="recap-chapters-grid" id="recap-chapters-grid"></div>
+
+        <!-- Filter Bar -->
+        <div class="recap-filter-bar" id="recap-filter-bar">
+          <div class="recap-filter-chips" id="recap-ch-chips">
+            <button class="recap-chip active" data-filter="all">All Photos (118)</button>
+            <button class="recap-chip" data-filter="1">Ch 1: Morning (16)</button>
+            <button class="recap-chip" data-filter="2">Ch 2: First Look (18)</button>
+            <button class="recap-chip" data-filter="3">Ch 3: The Vows (18)</button>
+            <button class="recap-chip" data-filter="4">Ch 4: Adelaide Friends (18)</button>
+            <button class="recap-chip" data-filter="5">Ch 5: City Romance (18)</button>
+            <button class="recap-chip" data-filter="6">Ch 6: Reception (18)</button>
+            <button class="recap-chip" data-filter="7">Ch 7: Forever (12)</button>
+          </div>
+          <div class="recap-filter-chips" id="recap-orient-chips">
+            <button class="recap-chip active" data-orient="all">All Sizes</button>
+            <button class="recap-chip" data-orient="landscape">Landscape (93)</button>
+            <button class="recap-chip" data-orient="portrait">Portrait (25)</button>
+          </div>
+        </div>
+
+        <!-- Active Chapter / Filter Status Bar -->
+        <div class="recap-grid-status" id="recap-grid-status">
+          <span class="recap-status-text" id="recap-status-text">Displaying All 118 Moments with Adelaide Friends</span>
+          <span class="recap-status-count" id="recap-status-count">118 Photos</span>
+        </div>
+
+        <!-- Full Uncropped Photos Grid -->
+        <div class="recap-photo-grid" id="recap-photo-grid"></div>
+
+      </div>
+    </section>
+
+    <!-- ================= THUMBNAIL DRAWER ================= -->
+    <aside class="thumb-drawer" id="thumb-drawer" aria-label="Photo Thumbnails">
+      <div class="thumb-drawer-header">
+        <div class="thumb-drawer-title">All 118 Moments with Adelaide Friends</div>
+        <button class="btn-icon" id="thumb-drawer-close" style="width: 28px; height: 28px; font-size: 14px;">✕</button>
+      </div>
+      <div class="thumb-strip" id="thumb-strip"></div>
+    </aside>
+
+    <!-- ================= FULLSCREEN HD LIGHTBOX ================= -->
+    <div class="lightbox-modal" id="lightbox-modal" role="dialog" aria-modal="true" aria-label="HD Photo Viewer">
+      <button class="lb-close-btn" id="lb-close-btn" aria-label="Close Viewer">✕</button>
+      <button class="lb-nav-btn prev" id="lb-prev-btn" aria-label="Previous">&#8592;</button>
+
+      <div class="lb-content-wrap">
+        <div class="lb-image-box">
+          <img id="lb-img" src="" alt="Photograph">
+        </div>
+        <div class="lb-caption-box">
+          <div class="lb-cap-title" id="lb-title">Photo Title</div>
+          <div class="lb-cap-desc" id="lb-desc">Photo Caption</div>
+        </div>
+      </div>
+
+      <button class="lb-nav-btn next" id="lb-next-btn" aria-label="Next">&#8594;</button>
+    </div>
+
+  </div>
+
+  <!-- Scripts: Loaded as standard scripts for 100% offline file:// and HTTP compatibility -->
+  <script src="src/albumData.js?v=2.1"></script>
+  <script src="src/app.js?v=2.1"></script>
+</body>
+</html>

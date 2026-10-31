@@ -1,0 +1,9 @@
+node_modules
+output
+
+# Local Netlify folder
+.netlify
+node_modules
+output
+output
+.netlify
